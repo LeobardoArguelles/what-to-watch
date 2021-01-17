@@ -2,6 +2,11 @@ var express = require('express');
 var router = express.Router();
 var path = require('path');
 require('dotenv').config();
+const root = 'https://api.themoviedb.org/3/search/movie?api_key=';
+const key = process.env.KEY;
+const language = '&language=en-US';
+// &query=percy%20jackson&page=1&include_adult=false
+
 
 /* GET home page. */
 router.get('/', function(req, res) {
@@ -10,7 +15,9 @@ router.get('/', function(req, res) {
 
 // POST suggestion to home page.
 router.post('/', function(req, res) {
-  console.log('POST');
+  
+  console.log(req.body);
+  res.sendFile(path.join(__dirname, '../views/html/', 'index.html'));
 });
 
 module.exports = router;

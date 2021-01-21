@@ -9,6 +9,9 @@ require('dotenv').config();
 var app = require('../app');
 var debug = require('debug')('what-to-watch:server');
 var http = require('http');
+var MOVIE_ROOT = "https://api.themoviedb.org/3/search/movie?api_key=<<api_key>>&language=en-US&query=<<query>>&page=1&include_adult=false"
+
+const axios = require('axios');
 
 /**
  * Get port from environment and store in Express.
@@ -26,7 +29,12 @@ const io = require('socket.io')(server);
 
 io.on('connection', (socket) => {
   socket.on('suggestion', (msg) => {
-    console.log('Suggestion: ' + msg);
+
+    console.log('Searching info for: ' + msg);
+    let query = msg.replace(" ", "%20");
+    let uri = MOVIE_ROOT.replace("<<api_key>>", process.env.KEY).replace("<<query>>", query);
+
+    print_id(uri);
   });
 });
 
@@ -97,4 +105,19 @@ function onListening() {
     : 'port ' + addr.port;
   debug('Listening on ' + bind);
   console.log("Listening...");
+}
+
+/**
+ * Axios async function
+ */
+
+async function print_id(uri) {
+  let res = await axios.get(uri);
+  let data = res.data['results'][0];
+  console.log(data);
+  let title = data['title'];
+  let poster_uri = data['poster_path'];
+  let overview = data['overview'];
+
+  io.emit('update', title, poster_uri, overview);
 }

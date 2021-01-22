@@ -116,7 +116,7 @@ async function print_id(uri) {
   let data = res.data['results'][0];
   console.log(data);
   let title = data['title'];
-  let poster_uri = data['poster_path'];
+  let poster_uri = data['backdrop_path'];
   let overview = data['overview'];
 
   io.emit('update', title, poster_uri, overview);

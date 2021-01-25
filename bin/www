@@ -33,6 +33,7 @@ var suggestions = {};
 io.on('connection', (socket) => {
 
   users[socket.id] = {bans_remaining: 1};
+  io.emit("create", suggestions);
 
   socket.on('suggestion', (msg) => {
       let query = msg.replace(" ", "%20");
@@ -135,5 +136,5 @@ async function add_suggestion(uri) {
   } else {
     console.log("Movie already suggested by someone else");
   }
-
 }
+

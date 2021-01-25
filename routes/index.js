@@ -5,7 +5,6 @@ require('dotenv').config();
 const root = 'https://api.themoviedb.org/3/search/movie?api_key=';
 const key = process.env.KEY;
 const language = '&language=en-US';
-// &query=percy%20jackson&page=1&include_adult=false
 
 
 /* GET home page. */

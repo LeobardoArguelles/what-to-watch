@@ -17,7 +17,20 @@ form.addEventListener('submit', function(e) {
   }
 });
 
-socket.on('update', function(title, poster_path, overview) {
+socket.once('create', (suggestions) => {
+  console.log("New room created!");
+  if (!(empty(suggestions))){
+    for (const [key, movie] of Object.entries(suggestions)) {
+      update_page(movie.name, movie.poster, movie.overview);
+    }
+  }  
+});
+
+socket.on('update', (title, poster_path, overview) => {
+  update_page(title, poster_path, overview);
+});
+
+function update_page(title, poster_path, overview) {
 
   // Container
   let node = document.createElement("div");
@@ -145,7 +158,7 @@ socket.on('update', function(title, poster_path, overview) {
   node.appendChild(show_button);
   
   document.getElementById("list").appendChild(node);
-});
+}
 
 function show_overview(element) {
   alert(element.innerHTML);
@@ -163,4 +176,8 @@ function hide_buttons(element) {
   poster_image.classList.remove('opacity-40');
   element.classList.add('z-0');
   element.classList.remove('z-20');
+}
+
+function empty(obj) {
+  return Object.keys(obj).length === 0;
 }

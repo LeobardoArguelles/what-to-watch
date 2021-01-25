@@ -103,7 +103,24 @@ socket.on('update', function(title, poster_path, overview) {
   poster.addEventListener('mouseenter', (e) => {
     show_buttons(e.target);
   });
+
+  // Vote decoration
+  let decoration = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  decoration.setAttribute('fill', 'none');
+  decoration.setAttribute('viewBox', '0 0 24 24');
+  decoration.setAttribute('stroke', 'black');
+  decoration.classList.add('h-4/6', 'mx-2', 'md:mx-4');
+
+  let dec_path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  dec_path.setAttribute('stroke-line', 'round');
+  dec_path.setAttribute('stroke-linejoin', 'round');
+  dec_path.setAttribute('stroke-width', '2');
+  dec_path.setAttribute('d', 'M130.22708,71.224065 22.04973,17.038434 0.13364,-14.967096 c 0,0 0.16704,-1.971111 -2.23839,-2.00452 -2.40542,-0.03341 -19.94498,-0.06682 -19.94498,-0.06682 z');
+  
+  decoration.appendChild(dec_path);
+  poster.appendChild(decoration);
   node.appendChild(poster);
+
 
   // Suggestion title
   let span = document.createElement('div');

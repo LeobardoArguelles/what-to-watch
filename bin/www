@@ -27,14 +27,17 @@ app.set('port', port);
 var server = http.createServer(app);
 const io = require('socket.io')(server);
 
+var users = {};
+var suggestions = {};
+
 io.on('connection', (socket) => {
+
+  users[socket.id] = {bans_remaining: 1};
+
   socket.on('suggestion', (msg) => {
-
-    console.log('Searching info for: ' + msg);
-    let query = msg.replace(" ", "%20");
-    let uri = MOVIE_ROOT.replace("<<api_key>>", process.env.KEY).replace("<<query>>", query);
-
-    print_id(uri);
+      let query = msg.replace(" ", "%20");
+      let uri = MOVIE_ROOT.replace("<<api_key>>", process.env.KEY).replace("<<query>>", query);
+      add_suggestion(uri);
   });
 });
 
@@ -111,13 +114,26 @@ function onListening() {
  * Axios async function
  */
 
-async function print_id(uri) {
+async function add_suggestion(uri) {
   let res = await axios.get(uri);
   let data = res.data['results'][0];
-  console.log(data);
   let title = data['title'];
-  let poster_uri = data['backdrop_path'];
-  let overview = data['overview'];
 
-  io.emit('update', title, poster_uri, overview);
+  if (!(title in suggestions)){
+    console.log(suggestions);
+    let poster_uri = data['backdrop_path'];
+    let overview = data['overview'];
+    suggestions[title] = {
+      name: title,
+      poster: poster_uri,
+      overview: overview,
+      upvotes: 0,
+      downvotes: 0,
+      banned: false      
+    }
+    io.emit('update', title, poster_uri, overview);
+  } else {
+    console.log("Movie already suggested by someone else");
+  }
+
 }

@@ -36,66 +36,80 @@ function update_page(title, poster_path, overview) {
   let node = document.createElement("div");
   node.classList.add('flex', 'flex-col', 'm-2', 'w-4/6', 'lg:w-1/4', 'bg-black', 'shadow-2xl', 'rounded-lg', 'relative');
 
+  // Suggestion title
+  let span = document.createElement('div');
+  let text = document.createTextNode(title);
+  span.classList.add('bg-indigo-800', 'text-center', 'text-white', 'font-bold', 'rounded-t-lg', 'text-2xl', 'px-8');
+  span.classList.add('leading-7', 'pt-2');
+  span.appendChild(text);
+  node.appendChild(span);
+
   // Voting div
   let voting_group = document.createElement('div');
   voting_group.id = title + ' buttons';
-  voting_group.classList.add('absolute', 'flex', 'flex-col', 'w-full', 'items-center', 'h-3/5', 'md:h-4/5', 'lg:h-3/4', 'justify-around');
-  voting_group.classList.add('z-0');
-  voting_group.addEventListener('mouseleave', (e) => {
-    hide_buttons(e.target);
-  });
+  voting_group.classList.add('flex', 'flex-row', 'w-full', 'items-center', 'h-3/5', 'md:h-4/5', 'lg:h-full', 'justify-around', 'top-8');
+  voting_group.classList.add('bg-indigo-800', 'py-2');
+  // voting_group.addEventListener('mouseleave', (e) => {
+  //   hide_buttons(e.target);
+  // });
 
 
   // Voting buttons
   let yes_button = document.createElement('button');
-  yes_button.classList.add('text-white', 'w-2/3', 'top-0', 'bg-green-600', 'rounded-lg', 'text-center', 'inline-flex', 'items-center', 'flex-row-reverse', 'h-1/5', 'text-sm', 'md:text-lg', 'lg:text-base', 'justify-end');
-  yes_button.textContent = '¡Quiero verla!';
+  yes_button.classList.add('text-white', 'w-1/5', 'top-0', 'bg-green-600', 'rounded-full', 'text-center', 'inline-flex', 'items-center', 'flex-row-reverse', 'text-sm', 'md:text-lg', 'lg:text-base', 'justify-center');
+  yes_button.classList.add( 'h-4/5', 'max-h-12');
+  yes_button.classList.add('transition', 'duration-300', 'ease-in-out', 'transform', 'hover:-translate-y-1', 'hover:scale-110');
+  // yes_button.textContent = '¡Quiero verla!';
 
-  let checkmark = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-  checkmark.setAttribute('fill', 'none');
-  checkmark.setAttribute('viewBox', '0 0 24 24');
-  checkmark.setAttribute('stroke', 'currentColor');
-  checkmark.classList.add('h-4/6', 'mx-2', 'md:mx-4');
+  let thumb_up = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  thumb_up.setAttribute('fill', 'none');
+  thumb_up.setAttribute('viewBox', '0 0 24 24');
+  thumb_up.setAttribute('stroke', 'currentColor');
+  thumb_up.classList.add('h-4/6', 'max-h-10', 'mx-2', 'md:mx-4');
 
   let path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
   path.setAttribute('stroke-line', 'round');
   path.setAttribute('stroke-linejoin', 'round');
   path.setAttribute('stroke-width', '2');
-  path.setAttribute('d', 'M5 13l4 4L19 7');
+  path.setAttribute('d', 'M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5');
 
-  checkmark.appendChild(path);
-  yes_button.appendChild(checkmark);
+  thumb_up.appendChild(path);
+  yes_button.appendChild(thumb_up);
   voting_group.appendChild(yes_button);
 
   let no_button = document.createElement('button');
-  no_button.classList.add('text-white', 'w-2/3', 'top-0', 'bg-red-700', 'rounded-lg', 'text-center', 'inline-flex', 'items-center', 'flex-row-reverse', 'h-1/5', 'text-sm', 'md:text-lg', 'lg:text-base', 'justify-end');
-  no_button.textContent = 'No quiero verla';
+  no_button.classList.add('text-white', 'w-1/5', 'top-0', 'bg-red-700', 'rounded-full', 'text-center', 'inline-flex', 'items-center', 'flex-row-reverse', 'text-sm', 'md:text-lg', 'lg:text-base', 'justify-center');
+  no_button.classList.add( 'h-4/5', 'max-h-12');
+  no_button.classList.add('transition', 'duration-300', 'ease-in-out', 'transform', 'hover:-translate-y-1', 'hover:scale-110');
+  // no_button.textContent = 'No quiero verla';
 
-  let xmark = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-  xmark.setAttribute('fill', 'none');
-  xmark.setAttribute('viewBox', '0 0 24 24');
-  xmark.setAttribute('stroke', 'currentColor');
-  xmark.classList.add('h-4/6', 'mx-2', 'md:mx-4');
+  let thumb_down = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  thumb_down.setAttribute('fill', 'none');
+  thumb_down.setAttribute('viewBox', '0 0 24 24');
+  thumb_down.setAttribute('stroke', 'currentColor');
+  thumb_down.classList.add('h-4/6', 'max-h-10', 'mx-2', 'md:mx-4');
 
   let xpath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
   xpath.setAttribute('stroke-line', 'round');
   xpath.setAttribute('stroke-linejoin', 'round');
   xpath.setAttribute('stroke-width', '2');
-  xpath.setAttribute('d', 'M6 18L18 6M6 6l12 12');
+  xpath.setAttribute('d', 'M10 14H5.236a2 2 0 01-1.789-2.894l3.5-7A2 2 0 018.736 3h4.018a2 2 0 01.485.06l3.76.94m-7 10v5a2 2 0 002 2h.096c.5 0 .905-.405.905-.904 0-.715.211-1.413.608-2.008L17 13V4m-7 10h2m5-10h2a2 2 0 012 2v6a2 2 0 01-2 2h-2.5');
 
-  xmark.appendChild(xpath);
-  no_button.appendChild(xmark);
+  thumb_down.appendChild(xpath);
+  no_button.appendChild(thumb_down);
   voting_group.appendChild(no_button);
 
   let ban_button = document.createElement('button');
-  ban_button.classList.add('text-white', 'w-2/3', 'top-0', 'bg-black', 'rounded-lg', 'text-center', 'inline-flex', 'items-center', 'flex-row-reverse', 'h-1/5', 'text-sm', 'md:text-lg', 'lg:text-base', 'justify-end');
-  ban_button.textContent = 'Vetar';
+  ban_button.classList.add('text-white', 'w-1/5', 'top-0', 'bg-black', 'rounded-full', 'text-center', 'inline-flex', 'items-center', 'flex-row-reverse', 'text-sm', 'md:text-lg', 'lg:text-base', 'justify-center');
+  ban_button.classList.add( 'h-4/5', 'max-h-12');
+  ban_button.classList.add('transition', 'duration-300', 'ease-in-out', 'transform', 'hover:-translate-y-1', 'hover:scale-110');
+  // ban_button.textContent = 'Vetar';
 
   let ban_symbol = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
   ban_symbol.setAttribute('fill', 'none');
   ban_symbol.setAttribute('viewBox', '0 0 24 24');
   ban_symbol.setAttribute('stroke', 'currentColor');
-  ban_symbol.classList.add('h-4/6', 'mx-2', 'md:mx-4');
+  ban_symbol.classList.add('h-4/6', 'max-h-10', 'mx-2', 'md:mx-4');
 
   let ban_path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
   ban_path.setAttribute('stroke-line', 'round');
@@ -112,10 +126,9 @@ function update_page(title, poster_path, overview) {
   let poster = document.createElement('img');
   poster.src = IMG_ROOT + poster_path;
   poster.alt = title + '- Poster';
-  poster.classList.add('rounded-t-lg', 'z-10');
-  poster.addEventListener('mouseenter', (e) => {
-    show_buttons(e.target);
-  });
+  // poster.addEventListener('mouseenter', (e) => {
+  //   show_buttons(e.target);
+  // });
 
   // Vote decoration
   let decoration = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
@@ -134,14 +147,6 @@ function update_page(title, poster_path, overview) {
   poster.appendChild(decoration);
   node.appendChild(poster);
 
-
-  // Suggestion title
-  let span = document.createElement('div');
-  let text = document.createTextNode(title);
-  span.classList.add('bg-green-900', 'text-center', 'text-white');
-  span.appendChild(text);
-  node.appendChild(span);
-
   // Overview
   let overview_content = document.createTextNode(overview);
   let overview_span = document.createElement('div');
@@ -153,7 +158,7 @@ function update_page(title, poster_path, overview) {
   let show_button = document.createElement('button');
   show_button.textContent = 'Leer sinopsis';
   show_button.setAttribute('onclick', 'show_overview(this.previousElementSibling)');
-  show_button.classList.add('bg-green-900', 'text-white');
+  show_button.classList.add('bg-indigo-800', 'text-white');
   show_button.classList.add('rounded-b-lg');
   node.appendChild(show_button);
   
@@ -166,7 +171,7 @@ function show_overview(element) {
 
 function show_buttons(element) {
   element.classList.add('opacity-40');
-  let buttons = element.parentElement.firstChild;
+  let buttons = element.parentElement.firstChild.nextSibling;
   buttons.classList.remove('z-0');
   buttons.classList.add('z-20');
 }

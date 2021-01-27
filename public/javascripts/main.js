@@ -6,6 +6,8 @@ let input = document.getElementById("input");
 var data = new FormData();
 var xhr = new XMLHttpRequest();
 
+let vote_pattern = /(.+)( buttons)/;
+
 const IMG_ROOT = 'https://image.tmdb.org/t/p/w342';
 
 
@@ -24,6 +26,10 @@ socket.once('create', (suggestions) => {
       update_page(movie.name, movie.poster, movie.overview);
     }
   }  
+});
+
+socket.on('vote', (movie_title, user_vote) => {
+  vote(movie_title, user_vote);
 });
 
 socket.on('update', (title, poster_path, overview) => {
@@ -49,17 +55,18 @@ function update_page(title, poster_path, overview) {
   voting_group.id = title + ' buttons';
   voting_group.classList.add('flex', 'flex-row', 'w-full', 'items-center', 'h-3/5', 'md:h-4/5', 'lg:h-full', 'justify-around', 'top-8');
   voting_group.classList.add('bg-indigo-800', 'py-2');
-  // voting_group.addEventListener('mouseleave', (e) => {
-  //   hide_buttons(e.target);
-  // });
-
 
   // Voting buttons
   let yes_button = document.createElement('button');
+  yes_button.id = title + ' upvote';
   yes_button.classList.add('text-white', 'w-1/5', 'top-0', 'bg-green-600', 'rounded-full', 'text-center', 'inline-flex', 'items-center', 'flex-row-reverse', 'text-sm', 'md:text-lg', 'lg:text-base', 'justify-center');
   yes_button.classList.add( 'h-4/5', 'max-h-12');
   yes_button.classList.add('transition', 'duration-300', 'ease-in-out', 'transform', 'hover:-translate-y-1', 'hover:scale-110');
-  // yes_button.textContent = '¡Quiero verla!';
+  yes_button.onclick = (e) => {
+    let movie_title = vote_pattern.exec(e.target.closest('div').id)[1];
+    socket.emit('vote', movie_title, 1);
+    vote(movie_title, 1);
+  }
 
   let thumb_up = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
   thumb_up.setAttribute('fill', 'none');
@@ -78,10 +85,15 @@ function update_page(title, poster_path, overview) {
   voting_group.appendChild(yes_button);
 
   let no_button = document.createElement('button');
+  no_button.id = title + ' downvote';
   no_button.classList.add('text-white', 'w-1/5', 'top-0', 'bg-red-700', 'rounded-full', 'text-center', 'inline-flex', 'items-center', 'flex-row-reverse', 'text-sm', 'md:text-lg', 'lg:text-base', 'justify-center');
   no_button.classList.add( 'h-4/5', 'max-h-12');
   no_button.classList.add('transition', 'duration-300', 'ease-in-out', 'transform', 'hover:-translate-y-1', 'hover:scale-110');
-  // no_button.textContent = 'No quiero verla';
+  no_button.onclick = (e) => {
+    let movie_title = vote_pattern.exec(e.target.closest('div').id)[1];
+    socket.emit('vote', movie_title, -1);
+    vote(movie_title, -1);
+  }
 
   let thumb_down = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
   thumb_down.setAttribute('fill', 'none');
@@ -100,10 +112,14 @@ function update_page(title, poster_path, overview) {
   voting_group.appendChild(no_button);
 
   let ban_button = document.createElement('button');
+  ban_button.id = title + ' ban';
   ban_button.classList.add('text-white', 'w-1/5', 'top-0', 'bg-black', 'rounded-full', 'text-center', 'inline-flex', 'items-center', 'flex-row-reverse', 'text-sm', 'md:text-lg', 'lg:text-base', 'justify-center');
   ban_button.classList.add( 'h-4/5', 'max-h-12');
   ban_button.classList.add('transition', 'duration-300', 'ease-in-out', 'transform', 'hover:-translate-y-1', 'hover:scale-110');
-  // ban_button.textContent = 'Vetar';
+  ban_button.onclick = (e) => {
+    let movie_title = vote_pattern.exec(e.target.closest('div').id)[1];
+    socket.emit('ban', movie_title);
+  }
 
   let ban_symbol = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
   ban_symbol.setAttribute('fill', 'none');
@@ -120,15 +136,23 @@ function update_page(title, poster_path, overview) {
   ban_symbol.appendChild(ban_path);
   ban_button.appendChild(ban_symbol);
   voting_group.appendChild(ban_button);
+
+  // Score keeper
+
+  let score_text = document.createElement('p');
+  score_text.id = title + ' score';
+  score_text.classList.add('text-white', 'font-mono');
+  score_text.classList.add('bg-indigo-800', 'py-2');
+  score_text.classList.add('hidden');
+  score_text.textContent = 'Puntuación: 0';
+  voting_group.appendChild(score_text);
+
   node.appendChild(voting_group);  
 
   // Poster image
   let poster = document.createElement('img');
   poster.src = IMG_ROOT + poster_path;
   poster.alt = title + '- Poster';
-  // poster.addEventListener('mouseenter', (e) => {
-  //   show_buttons(e.target);
-  // });
 
   // Vote decoration
   let decoration = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
@@ -161,7 +185,8 @@ function update_page(title, poster_path, overview) {
   show_button.classList.add('bg-indigo-800', 'text-white');
   show_button.classList.add('rounded-b-lg');
   node.appendChild(show_button);
-  
+
+
   document.getElementById("list").appendChild(node);
 }
 
@@ -176,13 +201,34 @@ function show_buttons(element) {
   buttons.classList.add('z-20');
 }
 
-function hide_buttons(element) {
-  let poster_image = element.nextSibling;
-  poster_image.classList.remove('opacity-40');
-  element.classList.add('z-0');
-  element.classList.remove('z-20');
+function hide_buttons(yes_button, no_button, ban_button) {
+  console.log("Hiding...");
+  yes_button.classList.add('hidden');
+  no_button.classList.add('hidden');
+  ban_button.classList.add('hidden');
 }
 
 function empty(obj) {
   return Object.keys(obj).length === 0;
+}
+
+function vote(movie, vote) {
+
+  // Variables to modify score
+  let score_pat = /(Puntuación:) (\d)/;
+  let score_keeper = document.getElementById(movie + ' score'); 
+  let score_text = score_keeper.textContent;
+  let [full_text, text, score] = score_pat.exec(score_text);
+  let new_score = Number(score) + vote;
+  score_keeper.textContent = text + ' ' + new_score;
+
+  // Buttons to hide
+  let yes_button = document.getElementById(movie + ' upvote');
+  let no_button = document.getElementById(movie + ' downvote');
+  let ban_button = document.getElementById(movie + ' ban');
+  hide_buttons(yes_button, no_button, ban_button);
+
+  score_keeper.classList.remove('hidden');
+
+  console.log(score_keeper.textContent);
 }

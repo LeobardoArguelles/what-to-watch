@@ -40,6 +40,10 @@ io.on('connection', (socket) => {
       let uri = MOVIE_ROOT.replace("<<api_key>>", process.env.KEY).replace("<<query>>", query);
       add_suggestion(uri);
   });
+
+  socket.on('vote', (movie_title, vote) => {
+    // io.emit('vote', movie_title, vote);
+  });
 });
 
 /**
@@ -128,8 +132,7 @@ async function add_suggestion(uri) {
       name: title,
       poster: poster_uri,
       overview: overview,
-      upvotes: 0,
-      downvotes: 0,
+      score: 0,
       banned: false      
     }
     io.emit('update', title, poster_uri, overview);

@@ -40,7 +40,7 @@ function update_page(title, poster_path, overview) {
 
   // Container
   let node = document.createElement("div");
-  node.classList.add('flex', 'flex-col', 'm-2', 'w-4/6', 'lg:w-1/4', 'bg-black', 'shadow-2xl', 'rounded-lg', 'relative');
+  node.classList.add('flex', 'flex-col', 'm-2', 'w-4/6', 'lg:w-1/4', 'bg-black', 'shadow-xl', 'rounded-lg', 'relative');
 
   // Suggestion title
   let span = document.createElement('div');

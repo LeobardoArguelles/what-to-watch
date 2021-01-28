@@ -41,8 +41,9 @@ io.on('connection', (socket) => {
       add_suggestion(uri);
   });
 
-  socket.on('vote', (movie_title, vote) => {
-    // io.emit('vote', movie_title, vote);
+  socket.on('vote', (movie_title, user_vote) => {
+    current_score = vote(movie_title, user_vote);
+    io.emit('update_score', movie_title, current_score);
   });
 });
 
@@ -125,7 +126,6 @@ async function add_suggestion(uri) {
   let title = data['title'];
 
   if (!(title in suggestions)){
-    console.log(suggestions);
     let poster_uri = data['backdrop_path'];
     let overview = data['overview'];
     suggestions[title] = {
@@ -139,5 +139,10 @@ async function add_suggestion(uri) {
   } else {
     console.log("Movie already suggested by someone else");
   }
+}
+
+function vote(title, user_vote){
+  suggestions[title]['score'] += user_vote;
+  return suggestions[title]['score'];
 }
 

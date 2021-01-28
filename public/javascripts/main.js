@@ -28,12 +28,12 @@ socket.once('create', (suggestions) => {
   }  
 });
 
-socket.on('vote', (movie_title, user_vote) => {
-  vote(movie_title, user_vote);
-});
-
 socket.on('update', (title, poster_path, overview) => {
   update_page(title, poster_path, overview);
+});
+
+socket.on('update_score', (movie_title, current_score) => {
+  update_score(movie_title, current_score);
 });
 
 function update_page(title, poster_path, overview) {
@@ -65,7 +65,7 @@ function update_page(title, poster_path, overview) {
   yes_button.onclick = (e) => {
     let movie_title = vote_pattern.exec(e.target.closest('div').id)[1];
     socket.emit('vote', movie_title, 1);
-    vote(movie_title, 1);
+    show_score(movie_title);
   }
 
   let thumb_up = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
@@ -92,7 +92,7 @@ function update_page(title, poster_path, overview) {
   no_button.onclick = (e) => {
     let movie_title = vote_pattern.exec(e.target.closest('div').id)[1];
     socket.emit('vote', movie_title, -1);
-    vote(movie_title, -1);
+    show_score(movie_title);
   }
 
   let thumb_down = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
@@ -201,34 +201,31 @@ function show_buttons(element) {
   buttons.classList.add('z-20');
 }
 
-function hide_buttons(yes_button, no_button, ban_button) {
-  console.log("Hiding...");
+function show_score(movie) {
+
+  // Buttons to hide
+  let yes_button = document.getElementById(movie + ' upvote');
+  let no_button = document.getElementById(movie + ' downvote');
+  let ban_button = document.getElementById(movie + ' ban');
+
   yes_button.classList.add('hidden');
   no_button.classList.add('hidden');
   ban_button.classList.add('hidden');
+
+  // Show score element
+  score_keeper = get_score_element(movie);
+  score_keeper.classList.remove('hidden');
 }
 
 function empty(obj) {
   return Object.keys(obj).length === 0;
 }
 
-function vote(movie, vote) {
+function update_score(movie, current_score) {
+  let score_keeper = get_score_element(movie);
+  score_keeper.textContent = 'Puntuación:' + current_score;
+}
 
-  // Variables to modify score
-  let score_pat = /(Puntuación:) (\d)/;
-  let score_keeper = document.getElementById(movie + ' score'); 
-  let score_text = score_keeper.textContent;
-  let [full_text, text, score] = score_pat.exec(score_text);
-  let new_score = Number(score) + vote;
-  score_keeper.textContent = text + ' ' + new_score;
-
-  // Buttons to hide
-  let yes_button = document.getElementById(movie + ' upvote');
-  let no_button = document.getElementById(movie + ' downvote');
-  let ban_button = document.getElementById(movie + ' ban');
-  hide_buttons(yes_button, no_button, ban_button);
-
-  score_keeper.classList.remove('hidden');
-
-  console.log(score_keeper.textContent);
+function get_score_element (movie_title) {
+  return document.getElementById(movie_title + ' score'); 
 }

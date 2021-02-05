@@ -11,6 +11,13 @@ var usersRouter = require('./routes/users');
 
 var app = express();
 
+//Set up mongoose connection
+var mongoose = require('mongoose');
+var mongoDB = 'mongodb+srv://HappyUmlaut:9NqqdaB5vJqgdhqEi3F8oKGqyZFwiad9DcavNLf4@cluster0.8d0zg.mongodb.net/Cluster0?retryWrites=true&w=majority';
+mongoose.connect(mongoDB, { useNewUrlParser: true , useUnifiedTopology: true});
+var db = mongoose.connection;
+db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
@@ -22,6 +29,8 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/js',express.static(path.join(__dirname, 'public/javascripts')));
 app.use('/styles',express.static(path.join(__dirname, 'public/stylesheets')));
+app.use('/files',express.static(path.join(__dirname, 'public/files')));
+
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);

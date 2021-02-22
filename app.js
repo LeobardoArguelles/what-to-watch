@@ -8,15 +8,41 @@ var logger = require('morgan');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
+const mysql = require('mysql');
+
+const con = mysql.createConnection({
+  host: 'localhost',
+  user: 'root',
+  password: 'AmLl290198',
+  database: 'movies'
+});
+
+con.connect((err) => {
+  if(err){
+    console.log('Error connecting to Db');
+    console.log(err);
+    return;
+  }
+  console.log('Connection established');
+});
+
+con.query('SELECT * FROM movies', (err,rows) => {
+  if(err) throw err;
+
+  console.log('Data received from Db:');
+  rows.forEach( (row) => {
+    console.log(`${row.name} was released in ${row.date}`);
+  });
+});
+
+con.end((err) => {
+  // The connection is terminated gracefully
+  // Ensures all remaining queries are executed
+  // Then sends a quit packet to the MySQL server.
+});
+
 
 var app = express();
-
-//Set up mongoose connection
-var mongoose = require('mongoose');
-var mongoDB = 'mongodb+srv://HappyUmlaut:9NqqdaB5vJqgdhqEi3F8oKGqyZFwiad9DcavNLf4@cluster0.8d0zg.mongodb.net/Cluster0?retryWrites=true&w=majority';
-mongoose.connect(mongoDB, { useNewUrlParser: true , useUnifiedTopology: true});
-var db = mongoose.connection;
-db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

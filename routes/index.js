@@ -2,9 +2,6 @@ var express = require('express');
 var router = express.Router();
 var path = require('path');
 require('dotenv').config();
-const root = 'https://api.themoviedb.org/3/search/movie?api_key=';
-const key = process.env.KEY;
-const language = '&language=en-US';
 
 
 /* GET home page. */

@@ -7,40 +7,7 @@ var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
-
-const mysql = require('mysql');
-
-const con = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: 'AmLl290198',
-  database: 'movies'
-});
-
-con.connect((err) => {
-  if(err){
-    console.log('Error connecting to Db');
-    console.log(err);
-    return;
-  }
-  console.log('Connection established');
-});
-
-con.query('SELECT * FROM movies', (err,rows) => {
-  if(err) throw err;
-
-  console.log('Data received from Db:');
-  rows.forEach( (row) => {
-    console.log(`${row.name} was released in ${row.date}`);
-  });
-});
-
-con.end((err) => {
-  // The connection is terminated gracefully
-  // Ensures all remaining queries are executed
-  // Then sends a quit packet to the MySQL server.
-});
-
+var queryRouter = require('./routes/query');
 
 var app = express();
 
@@ -60,6 +27,7 @@ app.use('/files',express.static(path.join(__dirname, 'public/files')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/query', queryRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -77,4 +45,5 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
- module.exports = app;
+module.exports = app;
+

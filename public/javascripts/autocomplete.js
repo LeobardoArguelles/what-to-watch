@@ -1,5 +1,5 @@
 const search = document.getElementById('input');
-
+const btn_suggest = document.getElementById('btn-suggest');
 
 // Search movies.json and filter it
 // const searchMovies = async searchText => {
@@ -27,14 +27,33 @@ search.addEventListener('input', () => searchMovies(search.value));
 function updateOptions(new_options) {
   // Call to autocomplete
   let options_arr = makeArray(new_options);
-  autocomplete(document.getElementById('list'), options_arr);
+  let root = document.getElementById('autocomplete-list');
+  clearList(root);
+  autocomplete(root, options_arr);
 }
 
 function autocomplete(root, options) {
   for (let i = 0; i < options.length; i++) {
     let child = document.createElement('div');
     child.textContent = options[i];
+    child.classList.add('hover:bg-gray-800', 'hover:text-white', 'cursor-pointer');
+    child.onclick = function () {useSuggestion(this.textContent)};
     root.appendChild(child);
+  }
+}
+
+function useSuggestion(suggestion) {
+  search.value = suggestion;
+  let root = document.getElementById('autocomplete-list');
+  clearList(root);
+  btn_suggest.click();
+}
+
+function clearList(root) {
+  let children = root.children;
+  for (let i = 0; i < children.length; i++) {
+    console.log(children[i]);
+    root.removeChild(children[i]);
   }
 }
 

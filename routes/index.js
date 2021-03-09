@@ -11,8 +11,6 @@ router.get('/', function(req, res) {
 
 // POST suggestion to home page.
 router.post('/', function(req, res) {
-  
-  console.log(req.body);
   res.sendFile(path.join(__dirname, '../views/html/', 'index.html'));
 });
 

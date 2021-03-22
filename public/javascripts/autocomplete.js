@@ -34,7 +34,7 @@ function updateOptions(new_options) {
 
 function autocomplete(root, options) {
   for (let i = 0; i < options.length; i++) {
-    let child = document.createElement('div');
+    let child = document.createElement('li');
     child.textContent = options[i];
     child.classList.add('hover:bg-gray-800', 'hover:text-white', 'cursor-pointer');
     child.onclick = function () {useSuggestion(this.textContent)};
@@ -45,9 +45,22 @@ function autocomplete(root, options) {
 function useSuggestion(suggestion) {
   search.value = suggestion;
   let root = document.getElementById('autocomplete-list');
-  clearList(root);
   btn_suggest.click();
+  // clearList(root);
+
+  root.parentNode.removeChild(root);
+
+  root = document.createElement("ul");
+  root.id = 'autocomplete-list';
+  
+  let form = document.getElementById("suggestion");
+  insertAfter(root, form);
 }
+
+function insertAfter(newNode, referenceNode) {
+  referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
+}
+
 
 function clearList(root) {
   let children = root.children;

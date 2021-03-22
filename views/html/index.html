@@ -3,23 +3,21 @@
 <html>
   <head>
     <title>
-      Test
+      Create a room
     </title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles/tailwind.css">
-    <link rel="stylesheet" href="styles/style.css">
+    <link rel="stylesheet" href="styles/build.css">
   </head>
-  <body class="pb-20">
-    <div id="list" class="flex flex-col lg:flex-row flex-wrap flex-initial px-8 content-center">
-    </div>
-    <div class="flex flex-col items-center">
-      <form id="suggestion" method="POST" action="/" class="relative inset-x-0 bottom-0 w-full text-center" autocomplete="off">
-        <input type="text" id="input" name="input" class="border-2 border-black rounded-l-full w-3/4 md:w-1/2 pl-4 leading-8 bg-gray-800 text-white">
-        <button id="btn-suggest" type="submit" value="Submit" class="border-2 border-black border-l-0 leading-8 px-2 -m-1 md:-m-1.5 rounded-r-full bg-gray-500 text-white">
-          Sugerir
-        </button>
+  <body class="pb-20 flex flex-row place-items-center min-h-screen">
+    <div class="card mx-auto py-8 space-y-6 text-center w-max">
+      <form action="" class="flex flex-col items-center space-y-4">
+        <label for="room-number" class="text-2xl whitespace-nowrap">Únete a un cuarto</label>
+        <input type="text" name="room-number" id="room-number" maxlength="4" placeholder="Código aquí" class="text-center border border-gray-500">
+        <button type="submit" class="btn w-max">Unirme</button>
       </form>
-      <ul class="list-none w-1/2" id="autocomplete-list"></ul>
+      <hr class="border-2 border-indigo-600 border-dashed">
+      <button type="button" class="btn self-center w-max">Crear cuarto</button>
     </div>
     <script src="/socket.io/socket.io.js"></script>
     <script src="/js/main.js"></script>

@@ -22,7 +22,7 @@ form.addEventListener('submit', function(e) {
   }
 });
 
-socket.once('create', (suggestions) => {
+socket.on('create', (suggestions) => {
   console.log("New room created!");
   if (!(empty(suggestions))){
     for (const [key, movie] of Object.entries(suggestions)) {
